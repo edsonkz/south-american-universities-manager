@@ -1,0 +1,23 @@
+{
+  "name": "south-american-universities-manger",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "module": "src/server.js",
+  "scripts": {
+    "start": "node -r esm ./src/server.js",
+    "populate": "node -r esm ./src/populateDB.js"
+  },
+  "author": "Edson Cavalcante de Albuquerque Bisneto",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.26.1",
+    "esm": "^3.2.25",
+    "express": "^4.18.2",
+    "mongoose": "^6.6.5",
+    "mongoose-paginate-v2": "^1.7.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
