@@ -22,22 +22,39 @@ class UniversityController {
 
 	async findAll(req, res) {
 		const getPagination = (page, size) => {
-			const limit = size ? +size : 5;
+			const limit = size ? size : 20;
 			const offset = page ? page * limit : 0;
 			return { limit, offset };
 		};
 
-		const { page, size } = req.query;
+		const { page, size, country } = req.query;
+		console.log(country);
+
+		if (size > 20) {
+			size = 20;
+		}
+
 		const { limit, offset } = getPagination(page, size);
 		try {
-			var universitiesPage = await University.paginate(
-				{},
-				{
-					select: "-_id",
-					offset,
-					limit,
-				}
-			);
+			if (country) {
+				var universitiesPage = await University.paginate(
+					{ country },
+					{
+						select: "_id name country state-province",
+						offset,
+						limit,
+					}
+				);
+			} else {
+				var universitiesPage = await University.paginate(
+					{},
+					{
+						select: "_id name country state-province",
+						offset,
+						limit,
+					}
+				);
+			}
 
 			if (universitiesPage.totalDocs === 0) {
 				universitiesPage.docs = "There is no universities.";

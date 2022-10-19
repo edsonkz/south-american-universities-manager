@@ -16,5 +16,5 @@ const UniversitySchema = new Schema({
 });
 
 UniversitySchema.plugin(mongoosePaginate);
-const University = model("Article", UniversitySchema);
+const University = model("University", UniversitySchema);
 export { University };
