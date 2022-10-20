@@ -4,10 +4,10 @@ class UniversityController {
 	async create(req, res) {
 		let newUniversity = new University(req.body);
 		try {
-			const univerisity = await University.findOne({ 'state-province': newUniversity['state-province'], name: newUniversity.name, country: newUniversity.country });
-			if(univerisity)
+			const university = await University.findOne({ 'state-province': newUniversity['state-province'], name: newUniversity.name, country: newUniversity.country });
+			if (university)
 				return res.send({
-					message: "University already exists with id: " + univerisity._id
+					message: "University already exists with id: " + university._id
 				});
 
 			await newUniversity.save();
@@ -92,6 +92,59 @@ class UniversityController {
 				totalPages: universitiesPage.totalPages,
 				currentPage: universitiesPage.page - 1,
 			});
+		} catch (error) {
+			console.log("Error", error);
+			return res
+				.status(404)
+				.send({ name: error.name, error: error.message });
+		}
+	}
+
+	async update(req, res) {
+		let { id } = req.params;
+		try {
+			let university = await University.findOne({ _id: id });
+			if (university === null)
+				return res.send({
+					message: "Couldn't find a article with this id.",
+				});
+			let { country, name } = university;
+			let state_province = university["state-province"];
+			country = req.body.country ? req.body.country : country;
+			name = req.body.name ? req.body.name : name;
+			state_province = req.body["state-province"] ? req.body["state-province"] : state_province;
+
+			let universityDuplicate = await University.findOne({ 'state-province': state_province, name: name, country: country });
+			if (universityDuplicate)
+				return res.send({
+					message: "University already exists with those new parameters. Id: " + universityDuplicate._id
+				});
+
+				university = await University.updateOne({_id: id }, req.body);
+				return res.send(university);
+
+		} catch (error) {
+			console.log("Error", error);
+			return res
+				.status(404)
+				.send({ name: error.name, error: error.message });
+		}
+	}
+
+	async delete(req, res) {
+		let { id } = req.params;
+		try {
+			let university = await University.findOne({ _id: id });
+			if (university === null || university.length <= 0) {
+				return res.send({
+					message: "Couldn't find a university with this id.",
+				});
+			} else {
+				university = await University.deleteOne({ _id: id });
+				return res.send({
+					message: `University with id ${id} was successfully deleted.`,
+				});
+			}
 		} catch (error) {
 			console.log("Error", error);
 			return res
