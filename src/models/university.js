@@ -4,7 +4,7 @@ import mongoosePaginate from "mongoose-paginate-v2";
 const UniversitySchema = new Schema({
 	name: { type: String, required: true },
 	country: { type: String, required: true },
-	"state-province": { type: String, required: false },
+	"state-province": { type: String, required: false, default: null },
 	alpha_two_code: {
 		type: String,
 		required: true,

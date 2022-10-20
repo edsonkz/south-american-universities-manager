@@ -1,6 +1,27 @@
 import { University } from "../models/university";
 
 class UniversityController {
+	async create(req, res) {
+		let newUniversity = new University(req.body);
+		try {
+			const univerisity = await University.findOne({ 'state-province': newUniversity['state-province'], name: newUniversity.name, country: newUniversity.country });
+			if(univerisity)
+				return res.send({
+					message: "University already exists with id: " + univerisity._id
+				});
+
+			await newUniversity.save();
+			return res.send({
+				message: "New university succussefully created. ID: " + newUniversity._id,
+			});
+		} catch (error) {
+			console.log("Error", error);
+			return res
+				.status(404)
+				.send({ name: error.name, error: error.message });
+		}
+	}
+
 	async findOne(req, res) {
 		let { id } = req.params;
 		try {
@@ -28,7 +49,6 @@ class UniversityController {
 		};
 
 		const { page, size, country } = req.query;
-		console.log(country);
 
 		if (size > 20) {
 			size = 20;
