@@ -106,21 +106,19 @@ class UniversityController {
 			let university = await University.findOne({ _id: id });
 			if (university === null)
 				return res.send({
-					message: "Couldn't find a article with this id.",
+					message: "Couldn't find a university with this id.",
 				});
-			let { country, name } = university;
-			let state_province = university["state-province"];
-			country = req.body.country ? req.body.country : country;
+			let { name } = university;
 			name = req.body.name ? req.body.name : name;
-			state_province = req.body["state-province"] ? req.body["state-province"] : state_province;
+			let {domains, web_pages} = req.body;
 
-			let universityDuplicate = await University.findOne({ 'state-province': state_province, name: name, country: country });
-			if (universityDuplicate)
+			let universityDuplicate = await University.findOne({ 'state-province': university['state-province'], name: name, country: university.country });
+			if (universityDuplicate && university.name !== name)
 				return res.send({
 					message: "University already exists with those new parameters. Id: " + universityDuplicate._id
 				});
 
-				university = await University.updateOne({_id: id }, req.body);
+				university = await University.updateOne({_id: id }, {$set: {name, domains, web_pages}});
 				return res.send(university);
 
 		} catch (error) {
